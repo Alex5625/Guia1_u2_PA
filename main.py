@@ -37,7 +37,7 @@ class VentanaPrincipal(Gtk.ApplicationWindow):
         boton.set_label("Guardar")
         main_box.append(boton)
         boton.connect("clicked",self.on_clicked_open_dialog)
-
+ 
         #---------boton para imprimir en consola----------
 
         boton1 = Gtk.Button()
@@ -77,13 +77,13 @@ class VentanaPrincipal(Gtk.ApplicationWindow):
         
         dialog.set_deletable(True)
 
-        dialog.connect("response", self.on_response_dialog)
+        dialog.connect("response", self.on_response_dialog_save)
         
         dialog.set_visible(True)
 
         pass
 
-    def on_response_dialog(self, widget, response):
+    def on_response_dialog_save(self, widget, response):
         # print(response)
 
         dialog = Gtk.FileDialog.new()
@@ -110,6 +110,49 @@ class VentanaPrincipal(Gtk.ApplicationWindow):
             archivo.write(chiste)
 
         self.texto.set_text("")
+
+                # ------crear mensaje de dialogo ---------
+        dialog = Gtk.MessageDialog(title="",
+                                   transient_for=self,
+                                   modal=True,
+                                   default_width=300,
+                                   default_height=50)
+
+        # ----- añade texto debajo de titulo
+        dialog.set_property("secondary-text",
+                            "FELICIDADES SE GUARDÓ EXITOSAMENTE")
+
+        #-----
+        dialog.add_buttons("Ok", Gtk.ResponseType.OK,
+                           "Salir", Gtk.ResponseType.CLOSE)
+        
+        dialog.set_deletable(True)
+
+        dialog.connect("response", self.on_response_dialog_exit)
+        
+        dialog.set_visible(True)
+
+        pass
+
+
+    def on_response_dialog_exit(self, widget, response):
+        # print(response)
+
+        dialog = Gtk.FileDialog.new()
+        if response == Gtk.ResponseType.OK:
+            #guardar archivo
+            print("Apreta boton OK")
+            dialog.save(self, None, self.save_dialog_open_response)
+        elif response == Gtk.ResponseType.CLOSE:
+            #no guardar el archivo
+            print("apreto el close")
+        elif response == Gtk.ResponseType.DELETE_EVENT:
+            print("Te saliste apretando ESC")
+        #widget.destroy()
+        sys.exit()
+
+
+
 
     def on_clicked_print_chiste(self, widget):
         
